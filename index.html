@@ -6,6 +6,8 @@
 
 <meta charset="UTF-8">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>
 منظومة الرعاية الصحية
 </title>
@@ -21,20 +23,20 @@ box-sizing:border-box;
 body{
 
 font-family:Arial;
-background:#f3f6fb;
-padding:30px;
+background:#eef3fb;
+padding:20px;
 color:#222;
 
 }
 
 .container{
 
-max-width:700px;
+max-width:850px;
 margin:auto;
 background:white;
 padding:30px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
+border-radius:25px;
+box-shadow:0 10px 35px rgba(0,0,0,.08);
 
 }
 
@@ -43,29 +45,44 @@ h1{
 text-align:center;
 margin-bottom:30px;
 color:#0b57d0;
+font-size:38px;
+
+}
+
+.search-box{
+
+margin-bottom:30px;
 
 }
 
 input{
 
 width:100%;
-padding:16px;
+padding:18px;
 font-size:20px;
-border:1px solid #ccc;
-border-radius:10px;
-margin-bottom:20px;
+border:2px solid #d6e2ff;
+border-radius:14px;
+outline:none;
+transition:.3s;
+
+}
+
+input:focus{
+
+border-color:#0b57d0;
 
 }
 
 button{
 
 width:100%;
-padding:16px;
+padding:18px;
 font-size:20px;
+margin-top:15px;
 background:#0b57d0;
 color:white;
 border:none;
-border-radius:10px;
+border-radius:14px;
 cursor:pointer;
 transition:.3s;
 
@@ -74,91 +91,127 @@ transition:.3s;
 button:hover{
 
 background:#0847ad;
+transform:translateY(-2px);
 
 }
 
 .card{
 
-margin-top:30px;
+margin-top:25px;
 padding:25px;
 background:#f9fbff;
-border-radius:15px;
+border-radius:20px;
 border:1px solid #dbe6ff;
 
 }
 
 .section{
 
-margin-bottom:30px;
+margin-bottom:35px;
 
 }
 
 .section-title{
 
-font-size:24px;
-margin-bottom:15px;
+font-size:28px;
+margin-bottom:18px;
 color:#0b57d0;
 padding-bottom:10px;
-border-bottom:1px solid #dbe6ff;
+border-bottom:2px solid #dbe6ff;
 
 }
 
 .item{
 
-margin-bottom:12px;
+font-size:19px;
 line-height:2;
-white-space:pre-line;
-font-size:18px;
+margin-bottom:12px;
 
 }
 
 .transactions{
 
-margin-top:15px;
+margin-top:20px;
 
 }
 
 .transaction{
 
 background:white;
-padding:15px;
+padding:18px;
+border-radius:16px;
+margin-bottom:18px;
+border:1px solid #e0e0e0;
+line-height:2;
+box-shadow:0 3px 10px rgba(0,0,0,.03);
+
+}
+
+.status{
+
+display:inline-block;
+padding:10px 16px;
 border-radius:12px;
-border:1px solid #ddd;
-margin-bottom:15px;
+font-weight:bold;
+margin-top:10px;
+font-size:17px;
+
+}
+
+.green{
+
+background:#e8f7ee;
+color:#1f8b4c;
+
+}
+
+.yellow{
+
+background:#fff8e1;
+color:#b78103;
+
+}
+
+.red{
+
+background:#ffeaea;
+color:#cc2f2f;
+
+}
+
+.notes{
+
+margin-top:12px;
+padding:14px;
+background:#fff8eb;
+border-radius:12px;
 line-height:2;
 
 }
 
-.status-green{
+.update-box{
 
-background:#e8f7ee;
-color:#1f8b4c;
-padding:10px 15px;
-border-radius:10px;
-font-weight:bold;
-display:inline-block;
+background:#edf4ff;
+padding:18px;
+border-radius:16px;
+font-size:18px;
 
 }
 
-.status-yellow{
+.not-found{
 
-background:#fff8e1;
-color:#b78103;
-padding:10px 15px;
-border-radius:10px;
-font-weight:bold;
-display:inline-block;
+text-align:center;
+font-size:22px;
+padding:30px;
 
 }
 
-.status-red{
+.footer{
 
-background:#ffeaea;
-color:#cc2f2f;
-padding:10px 15px;
-border-radius:10px;
-font-weight:bold;
-display:inline-block;
+text-align:center;
+margin-top:40px;
+color:#777;
+font-size:15px;
 
 }
 
@@ -174,6 +227,8 @@ display:inline-block;
 منظومة الرعاية الصحية
 </h1>
 
+<div class="search-box">
+
 <input
 type="text"
 id="employeeId"
@@ -184,11 +239,31 @@ placeholder="أدخل الرقم الوظيفي"
 بحث
 </button>
 
+</div>
+
 <div id="result"></div>
+
+<div class="footer">
+
+منظومة الرعاية الصحية © 2026
+
+</div>
 
 </div>
 
 <script>
+
+function getStatusClass(text){
+
+if(text.includes("🟢")) return "green";
+
+if(text.includes("🟡")) return "yellow";
+
+if(text.includes("🔴")) return "red";
+
+return "";
+
+}
 
 function searchEmployee(){
 
@@ -218,6 +293,37 @@ if(cols[0].trim() === id){
 
 found = true;
 
+let notesHTML = "";
+
+if(cols[8].trim() !== ""){
+
+const notes =
+cols[8].split("-");
+
+notes.forEach(note => {
+
+if(note.trim() !== ""){
+
+notesHTML += `
+<div class="item">
+• ${note.trim()}
+</div>
+`;
+
+}
+
+});
+
+}else{
+
+notesHTML = `
+<div class="item">
+🟢 لا توجد ملاحظات على المعاملة
+</div>
+`;
+
+}
+
 let transactionsHTML = "";
 
 const transactions =
@@ -225,17 +331,25 @@ cols[9].split("###");
 
 transactions.forEach(item => {
 
+const statusClass =
+getStatusClass(item);
+
 transactionsHTML += `
 
 <div class="transaction">
 
+<div class="status ${statusClass}">
 ${item.trim()}
+</div>
 
 </div>
 
 `;
 
 });
+
+const lastStatusClass =
+getStatusClass(cols[7]);
 
 result.innerHTML = `
 
@@ -298,7 +412,7 @@ ${cols[6]}
 حالة آخر معاملة
 </div>
 
-<div class="item">
+<div class="status ${lastStatusClass}">
 ${cols[7]}
 </div>
 
@@ -310,8 +424,10 @@ ${cols[7]}
 ملاحظات المعاملة
 </div>
 
-<div class="item">
-${cols[8].replaceAll("-", "<br>• ")}
+<div class="notes">
+
+${notesHTML}
+
 </div>
 
 </div>
@@ -336,9 +452,11 @@ ${transactionsHTML}
 آخر تحديث
 </div>
 
-<div class="item">
+<div class="update-box">
+
 آخر معاملة تم فحصها بتاريخ
 ${cols[10]}
+
 </div>
 
 </div>
@@ -355,7 +473,7 @@ if(!found){
 
 result.innerHTML = `
 
-<div class="card">
+<div class="card not-found">
 
 لا توجد بيانات لهذا الرقم الوظيفي
 
@@ -371,7 +489,7 @@ result.innerHTML = `
 
 result.innerHTML = `
 
-<div class="card">
+<div class="card not-found">
 
 حدث خطأ أثناء جلب البيانات
 
