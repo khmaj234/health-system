@@ -184,6 +184,14 @@ transform:translateY(-2px);
 
 }
 
+button:disabled{
+
+background:#8eaee6;
+cursor:not-allowed;
+transform:none;
+
+}
+
 .loading{
 
 text-align:center;
@@ -461,7 +469,10 @@ id="employeeId"
 placeholder="أدخل الرقم الوظيفي"
 >
 
-<button onclick="searchEmployee()">
+<button
+id="searchBtn"
+onclick="searchEmployee()"
+>
 بحث
 </button>
 
@@ -471,7 +482,7 @@ placeholder="أدخل الرقم الوظيفي"
 
 <div class="footer">
 
-جميع الحقوق محفوظة - محمد خالد خماج © 2026
+جميع الحقوق محفوظة - محمد خالد خماج  © 2026
 
 </div>
 
@@ -512,6 +523,9 @@ document.getElementById("employeeId").value.trim();
 const result =
 document.getElementById("result");
 
+const button =
+document.getElementById("searchBtn");
+
 if(id === ""){
 
 result.innerHTML = `
@@ -527,6 +541,10 @@ result.innerHTML = `
 return;
 
 }
+
+button.disabled = true;
+
+button.innerText = "جاري البحث...";
 
 result.innerHTML = `
 
@@ -754,6 +772,10 @@ ${cols[10]}
 
 }
 
+button.disabled = false;
+
+button.innerText = "بحث";
+
 if(!found){
 
 result.innerHTML = `
@@ -771,6 +793,10 @@ result.innerHTML = `
 })
 
 .catch(error => {
+
+button.disabled = false;
+
+button.innerText = "بحث";
 
 result.innerHTML = `
 
