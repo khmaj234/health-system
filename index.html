@@ -113,6 +113,32 @@ color:#0b57d0;
 
 }
 
+.success{
+
+background:#e8f7ee;
+color:#1f8b4c;
+padding:15px;
+border-radius:14px;
+margin-bottom:25px;
+font-size:18px;
+font-weight:bold;
+text-align:center;
+
+}
+
+.warning{
+
+background:#fff8e1;
+color:#b78103;
+padding:15px;
+border-radius:14px;
+margin-top:20px;
+font-size:18px;
+font-weight:bold;
+text-align:center;
+
+}
+
 .card{
 
 margin-top:25px;
@@ -160,7 +186,36 @@ border-radius:16px;
 margin-bottom:18px;
 line-height:2;
 font-size:18px;
+
+}
+
+.transaction-month{
+
+font-size:22px;
 font-weight:bold;
+margin-bottom:10px;
+
+}
+
+.transaction-status{
+
+font-weight:bold;
+margin-bottom:8px;
+
+}
+
+.transaction-value{
+
+font-size:18px;
+
+}
+
+.transaction-note{
+
+margin-top:12px;
+padding:12px;
+border-radius:10px;
+background:rgba(255,255,255,.5);
 
 }
 
@@ -266,6 +321,12 @@ font-size:18px;
 
 }
 
+.transaction-month{
+
+font-size:20px;
+
+}
+
 }
 
 </style>
@@ -345,6 +406,22 @@ document.getElementById("employeeId").value.trim();
 const result =
 document.getElementById("result");
 
+if(id === ""){
+
+result.innerHTML = `
+
+<div class="warning">
+
+يرجى إدخال الرقم الوظيفي
+
+</div>
+
+`;
+
+return;
+
+}
+
 result.innerHTML = `
 
 <div class="loading">
@@ -416,11 +493,42 @@ transactions.forEach(item => {
 const statusClass =
 getStatusClass(item);
 
+const parts =
+item.split("|");
+
+const month =
+parts[0] || "";
+
+const status =
+parts[1] || "";
+
+const value =
+parts[2] || "";
+
+const note =
+parts[3] || "";
+
 transactionsHTML += `
 
 <div class="transaction ${statusClass}">
 
-${item.trim()}
+<div class="transaction-month">
+${month}
+</div>
+
+<div class="transaction-status">
+${status}
+</div>
+
+<div class="transaction-value">
+${value} دينار
+</div>
+
+${note ? `
+<div class="transaction-note">
+${note}
+</div>
+` : ""}
 
 </div>
 
@@ -432,6 +540,12 @@ const lastStatusClass =
 getStatusClass(cols[7]);
 
 result.innerHTML = `
+
+<div class="success">
+
+تم العثور على بيانات الموظف بنجاح
+
+</div>
 
 <div class="card">
 
