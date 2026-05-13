@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+منظومة الرعاية الصحية
+</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:Arial;
+background:#f3f6fb;
+padding:30px;
+color:#222;
+
+}
+
+.container{
+
+max-width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+}
+
+h1{
+
+text-align:center;
+margin-bottom:30px;
+color:#0b57d0;
+
+}
+
+input{
+
+width:100%;
+padding:16px;
+font-size:20px;
+border:1px solid #ccc;
+border-radius:10px;
+margin-bottom:20px;
+
+}
+
+button{
+
+width:100%;
+padding:16px;
+font-size:20px;
+background:#0b57d0;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#0847ad;
+
+}
+
+.card{
+
+margin-top:30px;
+padding:25px;
+background:#f9fbff;
+border-radius:15px;
+border:1px solid #dbe6ff;
+
+}
+
+.section{
+
+margin-bottom:30px;
+
+}
+
+.section-title{
+
+font-size:24px;
+margin-bottom:15px;
+color:#0b57d0;
+
+}
+
+.item{
+
+margin-bottom:12px;
+line-height:2;
+white-space:pre-line;
+
+}
+
+.transactions{
+
+margin-top:15px;
+
+}
+
+.transaction{
+
+background:white;
+padding:15px;
+border-radius:12px;
+border:1px solid #ddd;
+margin-bottom:15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>
+منظومة الرعاية الصحية
+</h1>
+
+<input
+type="text"
+id="employeeId"
+placeholder="أدخل الرقم الوظيفي"
+>
+
+<button onclick="searchEmployee()">
+بحث
+</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+function searchEmployee(){
+
+const id =
+document.getElementById("employeeId").value.trim();
+
+const result =
+document.getElementById("result");
+
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSYFUqh50DXB_tn25j3Y6l-Abj5Q-unTCKC78J0gSEuWudg8hzrSq0Nlof7yeR7sKQDCff3YZYXqui0/pub?gid=1266511690&single=true&output=csv")
+
+.then(response => response.text())
+
+.then(data => {
+
+const rows =
+data.split("\n");
+
+let found = false;
+
+for(let i = 1; i < rows.length; i++){
+
+const cols =
+rows[i].split(",");
+
+if(cols[0].trim() === id){
+
+found = true;
+
+let transactionsHTML = "";
+
+const transactions =
+cols[9].split("###");
+
+transactions.forEach(item => {
+
+transactionsHTML += `
+
+<div class="transaction">
+
+${item.trim()}
+
+</div>
+
+`;
+
+});
+
+result.innerHTML = `
+
+<div class="card">
+
+<div class="section">
+
+<div class="section-title">
+البيانات الأساسية
+</div>
+
+<div class="item">
+الاسم الكامل:
+${cols[1]}
+</div>
+
+<div class="item">
+الرقم الوظيفي:
+${cols[0]}
+</div>
+
+<div class="item">
+الحالة الاجتماعية:
+${cols[2]}
+</div>
+
+<div class="item">
+السقف المالي:
+${cols[3]} دينار
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+البيانات المالية
+</div>
+
+<div class="item">
+قيمة آخر معاملة:
+${cols[4]} دينار
+</div>
+
+<div class="item">
+المتبقي من السقف:
+${cols[5]} دينار
+</div>
+
+<div class="item">
+السلف:
+${cols[6]}
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+حالة آخر معاملة
+</div>
+
+<div class="item">
+${cols[7]}
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+ملاحظات المعاملة
+</div>
+
+<div class="item">
+${cols[8].replaceAll("-", "<br>• ")}
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+معاملات سنة ${cols[11]}
+</div>
+
+<div class="transactions">
+
+${transactionsHTML}
+
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="section-title">
+آخر تحديث
+</div>
+
+<div class="item">
+آخر معاملة تم فحصها بتاريخ
+${cols[10]}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+}
+
+if(!found){
+
+result.innerHTML = `
+
+<div class="card">
+
+لا توجد بيانات لهذا الرقم الوظيفي
+
+</div>
+
+`;
+
+}
+
+})
+
+.catch(error => {
+
+result.innerHTML = `
+
+<div class="card">
+
+حدث خطأ أثناء جلب البيانات
+
+</div>
+
+`;
+
+console.log(error);
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
