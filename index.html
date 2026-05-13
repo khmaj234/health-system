@@ -43,9 +43,18 @@ box-shadow:0 10px 35px rgba(0,0,0,.08);
 h1{
 
 text-align:center;
-margin-bottom:30px;
+margin-bottom:10px;
 color:#0b57d0;
 font-size:38px;
+
+}
+
+.welcome{
+
+text-align:center;
+margin-bottom:30px;
+font-size:18px;
+color:#666;
 
 }
 
@@ -95,6 +104,15 @@ transform:translateY(-2px);
 
 }
 
+.loading{
+
+text-align:center;
+font-size:20px;
+padding:20px;
+color:#0b57d0;
+
+}
+
 .card{
 
 margin-top:25px;
@@ -137,24 +155,12 @@ margin-top:20px;
 
 .transaction{
 
-background:white;
 padding:18px;
 border-radius:16px;
 margin-bottom:18px;
-border:1px solid #e0e0e0;
 line-height:2;
-box-shadow:0 3px 10px rgba(0,0,0,.03);
-
-}
-
-.status{
-
-display:inline-block;
-padding:10px 16px;
-border-radius:12px;
+font-size:18px;
 font-weight:bold;
-margin-top:10px;
-font-size:17px;
 
 }
 
@@ -162,6 +168,7 @@ font-size:17px;
 
 background:#e8f7ee;
 color:#1f8b4c;
+border:1px solid #bfe3cd;
 
 }
 
@@ -169,6 +176,7 @@ color:#1f8b4c;
 
 background:#fff8e1;
 color:#b78103;
+border:1px solid #f0d98c;
 
 }
 
@@ -176,13 +184,24 @@ color:#b78103;
 
 background:#ffeaea;
 color:#cc2f2f;
+border:1px solid #efb2b2;
+
+}
+
+.status{
+
+display:inline-block;
+padding:12px 18px;
+border-radius:12px;
+font-weight:bold;
+font-size:18px;
 
 }
 
 .notes{
 
 margin-top:12px;
-padding:14px;
+padding:16px;
 background:#fff8eb;
 border-radius:12px;
 line-height:2;
@@ -215,6 +234,40 @@ font-size:15px;
 
 }
 
+@media(max-width:700px){
+
+.container{
+
+padding:20px;
+
+}
+
+h1{
+
+font-size:30px;
+
+}
+
+.section-title{
+
+font-size:24px;
+
+}
+
+.item{
+
+font-size:17px;
+
+}
+
+button,input{
+
+font-size:18px;
+
+}
+
+}
+
 </style>
 
 </head>
@@ -226,6 +279,12 @@ font-size:15px;
 <h1>
 منظومة الرعاية الصحية
 </h1>
+
+<div class="welcome">
+
+يرجى إدخال الرقم الوظيفي للاستعلام
+
+</div>
 
 <div class="search-box">
 
@@ -253,6 +312,19 @@ placeholder="أدخل الرقم الوظيفي"
 
 <script>
 
+const input =
+document.getElementById("employeeId");
+
+input.addEventListener("keypress", function(event){
+
+if(event.key === "Enter"){
+
+searchEmployee();
+
+}
+
+});
+
 function getStatusClass(text){
 
 if(text.includes("🟢")) return "green";
@@ -272,6 +344,16 @@ document.getElementById("employeeId").value.trim();
 
 const result =
 document.getElementById("result");
+
+result.innerHTML = `
+
+<div class="loading">
+
+جاري البحث...
+
+</div>
+
+`;
 
 fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSYFUqh50DXB_tn25j3Y6l-Abj5Q-unTCKC78J0gSEuWudg8hzrSq0Nlof7yeR7sKQDCff3YZYXqui0/pub?gid=1266511690&single=true&output=csv")
 
@@ -336,11 +418,9 @@ getStatusClass(item);
 
 transactionsHTML += `
 
-<div class="transaction">
+<div class="transaction ${statusClass}">
 
-<div class="status ${statusClass}">
 ${item.trim()}
-</div>
 
 </div>
 
